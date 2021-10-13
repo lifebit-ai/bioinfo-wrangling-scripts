@@ -20,7 +20,6 @@ def create_icd_counts_df(cb_export_df):
     temp = temp[~temp['Platekey-0.0'].isna()]
     temp['values']=temp['values'].str[:-1] + '.' + temp['values'].str[-1]
     temp['count'] = temp.groupby(['Platekey-0.0'])['values'].transform('count')
-    temp['count'] = 3
     temp = temp.rename(columns={'Platekey-0.0':'id','values':'code'})
     temp = temp[~temp['id'].isna()]
     return temp[['id','code','count']]
