@@ -16,7 +16,7 @@ cb_export_df = pd.read_csv('mounted-data/test_phewas_cohort.csv')
 def create_icd_counts_df(cb_export_df):
     cb_export_melt=pd.melt(cb_export_df,id_vars=['Platekey-0.0'],var_name='metrics', value_name='values')
     cb_export_melt = cb_export_melt[~cb_export_melt['values'].isna()]
-    temp = cb_export_melt[(cb_export_melt['metrics'].str.contains('Diag')& (cb_export_melt['values'].str.contains('A16')))]
+    temp = cb_export_melt[cb_export_melt['metrics'].str.contains('Diag')]
     temp = temp[~temp['Platekey-0.0'].isna()]
     temp['values']=temp['values'].str[:-1] + '.' + temp['values'].str[-1]
     temp['count'] = temp.groupby(['Platekey-0.0'])['values'].transform('count')
