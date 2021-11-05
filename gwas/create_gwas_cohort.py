@@ -3,12 +3,6 @@ pd.options.mode.chained_assignment = None
 female_cohort = pd.read_csv('mounted-data/female_cohort.csv')
 female_cohort.head()
 
-female_cohort = female_cohort[~female_cohort['Platekey-0.0'].isna()]
-
-bc_cases = female_cohort[(female_cohort['Cancer_Disease_Type-0.0']=='BREAST') | (female_cohort['Cancer_Disease_Type-0.1']=='BREAST') | (female_cohort['Cancer_Disease_Type-0.2']=='BREAST')]
-controls = female_cohort[(female_cohort['Cancer_Disease_Type-0.0'].isna()) & (female_cohort['Cancer_Disease_Type-0.1'].isna()) & (female_cohort['Cancer_Disease_Type-0.2'].isna())]
-bc_cases = female_cohort[(female_cohort['Cancer_Disease_Type-0.0']=='BREAST')]
-
 def create_gwas_bc_cohort(phenotype_df,n_cases_controls_to_match=1000):
     phenotype_df = phenotype_df[~female_cohort['Platekey-0.0'].isna()]
     bc_cases = phenotype_df[(phenotype_df['Cancer_Disease_Type-0.0']=='BREAST') | (phenotype_df['Cancer_Disease_Type-0.1']=='BREAST') | (phenotype_df['Cancer_Disease_Type-0.2']=='BREAST')]
@@ -28,5 +22,5 @@ def create_gwas_bc_cohort(phenotype_df,n_cases_controls_to_match=1000):
   
   
 df = create_gwas_bc_cohort(female_cohort)
-df['breast_cancer'].value_counts()
+
 df.to_csv('gwas_cohort_pheno_covariates.tsv',sep='\t',index=False)
