@@ -8,16 +8,22 @@
 # - Derives age at recruitment
 
 suppressMessages(library(tidyverse))
+library(stringr)
 
-input_file = "../../mounted-data/female_cohort.csv"
-female_cohort = readr::read_csv(input_file, na = c('', 'NA'))
+input_file <- "../../mounted-data/female_cohort.csv"
+female_cohort <- data.table::fread(input_file, na = c('', 'NA'))
 
-# Remove rows without platekeys
-t2 = female_cohort %>% dplyr::filter(!is.na(`Platekey-0.0`)) %>% unite( contains('Cancer_Disease_Type'), col = 'CANCERS', sep = ',')
+t1 <- female_cohort %>% dplyr::filter(!is.na(`Platekey-0.0`)) %>% unite( contains('Cancer_Disease_Type'), col = 'CANCERS', sep = ',')
+t2 <- t1 %>% dplyr::filter(str_detect(`CANCERS`, 'BREAST|NA,NA,NA'))
 t3 <- separate(data = t2, col = `Date_Of_Consent-0.0`, into = c("year_of_consent", "month_of_consent","day_of_consent"), sep = "-")
 t3$year_of_consent <- as.numeric(t3$year_of_consent)
 t3$`Year_Of_Birth-0.0` <- as.numeric(t3$`Year_Of_Birth-0.0`)
-t4 = t3 %>% mutate( breast_cancer = ifelse(grepl("BREAST", CANCERS), 1, 0), age=as.numeric(year_of_consent)-as.numeric(`Year_Of_Birth-0.0`))
-t5 = t4 %>% select(FID='Platekey-0.0', IID='Platekey-0.0', age, breast_cancer)
+t4 <- t3 %>% mutate( breast_cancer = ifelse(grepl("BREAST", CANCERS), 1, 0), age=as.numeric(year_of_consent)-as.numeric(`Year_Of_Birth-0.0`))
+cases <- t4 %>% dplyr::filter(breast_cancer=='1')
+controls <- t4 %>% dplyr::filter(breast_cancer=='0')
+cohort <- rbind(head(cases,1000),head(controls,1000))
+final_cohort <- cohort %>% select(FID='Platekey-0.0', IID='Platekey-0.0', age, breast_cancer)
 
-write_tsv(file="../../gwas_cohort_pheno_covariates.tsv", x=t5)
+nrow(cohort)
+
+write_tsv(file="../../gwas_cohort_pheno_covariates.tsv", x=final_cohort)
