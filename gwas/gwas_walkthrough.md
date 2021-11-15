@@ -52,15 +52,10 @@ Click "Save" in the top right of page with running jupyter session to save the o
 You now have everything you need to submit a GWAS job! You can navigate to Jobs by clicking on the **Jobs** tab on left-side bar. This will direct you to a page with existing jobs present in the workspace. You can create a new job by clicking on the green "New" button with the rocket icon in the top right. You will be redirected to "Run New Analysis" page - click "New" button to import the gwas pipeline anew. Next, click on the green Nextflow logo and input the URL of a GWAS pipeline (https://github.com/lifebit-ai/gwas), provide a name and click "Next". The following page will allow you to supply parameter inputs. Necessary parameters are:
 
 `--trait_type`: binary
-
 `--pheno_data`: This should point to the pheno + covariates file generated in the first step. It will be saved under "Project Results" -> project_name -> jupyter_session_name and can be linked using the blue database button.
-
 `--input_folder_location`: s3 link to vcf files - this will be provided in the workshop.
-
 `--number_of_files_to_process`: 3
-
 `--file_pattern`: pattern of filenames of VCFs and their indices
-
 `--phenotype_colname`: breast_cancer
 
 In the dropdown on the right, please select "gwas" - this will use "gwas" git tag of the pipeline to run the analysis.
